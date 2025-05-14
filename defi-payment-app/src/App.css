@@ -1,0 +1,88 @@
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f6f8;
+}
+
+.sidebar {
+  background-color: #2c3e50; /* Darker sidebar background */
+  color: #fff;
+  padding: 15px; /* Reduced padding */
+  width: 150px; /* Narrower sidebar */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Reduced gap */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h2 {
+  color: #ecf0f1; /* Light text for title */
+  margin-bottom: 15px; /* Reduced margin */
+  text-align: center;
+  font-size: 1.2em; /* Slightly smaller title */
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav li {
+  margin-bottom: 8px; /* Reduced margin for list items */
+}
+
+.nav-link {
+  display: block;
+  color: #ddd; /* More visible link color */
+  padding: 8px 10px; /* Reduced padding for links */
+  text-decoration: none;
+  border-radius: 3px;
+  transition: background-color 0.3s ease;
+  font-size: 0.95em; /* Slightly smaller font for links */
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav-link.active {
+  background-color: #3498db; /* More prominent active color */
+  color: #fff;
+  font-weight: bold;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.main-content h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Styles for Connect Wallet buttons within components */
+.connect-wallet-btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 15px; /* Add some margin below the button */
+}
+
+.connect-wallet-btn:hover {
+  background-color: #0056b3;
+}
+
+.account-info {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 8px 12px;
+  border-radius: 3px;
+  margin-bottom: 15px;
+}
