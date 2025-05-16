@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './BuyerView.css'; // Import specific CSS for this view
 import RatingComponent from './RatingComponent';
 import DisputeComponent from './DisputeComponent';
