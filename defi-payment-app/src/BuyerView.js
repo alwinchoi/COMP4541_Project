@@ -24,6 +24,30 @@ function BuyerView({ web3, account, sellerAddress, createdOrderIds, setCreatedOr
 
   console.log('buyer account', account);
 
+  const fetchBuyerOrderIds = async () => {
+    if (!contract || !account) return; // Ensure contract and account are available
+
+    try {
+      const buyerOrderIds = await contract.methods.getBuyerOrderIds(account).call({ from: account });
+      console.log("Buyer order IDs:", buyerOrderIds);
+      setCreatedOrderIds(buyerOrderIds); // Update state with fetched order IDs
+
+      if (buyerOrderIds.length > 0) {
+        setSelectedOrderIdForInteraction(buyerOrderIds[buyerOrderIds.length - 1]); // Select the latest
+      }
+    } catch (error) {
+      console.error("Error fetching buyer order IDs:", error);
+      setTransactionStatus(`Failed to fetch order list: ${error.message}`);
+    }
+  };
+
+  // Fetch order IDs when the component loads or when contract/account changes
+  useEffect(() => {
+    if (contract && account) {
+      fetchBuyerOrderIds();
+    }
+  }, [contract, account]);
+
   const handleConfirmDelivery = async () => {
     if (!contract || !account) {
       alert('Please connect your wallet and account.');
