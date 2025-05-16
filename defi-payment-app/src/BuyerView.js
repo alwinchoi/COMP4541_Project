@@ -285,7 +285,7 @@ function BuyerView({ web3, account, sellerAddress, createdOrderIds, setCreatedOr
           </div>
           {deliveryConfirmationStatus && <p className="delivery-status">{deliveryConfirmationStatus}</p>}
         </div>
-        <div className="confirm-delivery-input">
+        {/* <div className="confirm-delivery-input">
           <label htmlFor="delivery-order-id">Order ID:</label>
           <input
             type="number"
@@ -299,7 +299,7 @@ function BuyerView({ web3, account, sellerAddress, createdOrderIds, setCreatedOr
           </button>
           </div>
           {deliveryConfirmationStatus && <p className="delivery-status">{deliveryConfirmationStatus}</p>}
-      </div>
+      </div> */}
 
     </div>
   );

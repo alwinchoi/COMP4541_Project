@@ -50,7 +50,8 @@ function DisputeComponent({ web3, account, contract, orderId }) {
         value={evidence}
         onChange={(e) => setEvidence(e.target.value)}
       />
-      <button onClick={handleReportDispute} disabled={!account || !orderId}>Report Dispute</button>
+      {/* disabled={!account || !orderId} */}
+      <button onClick={handleReportDispute} >Report Dispute</button>
       {transactionStatus && <p>{transactionStatus}</p>}
     </div>
   );
