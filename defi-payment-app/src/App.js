@@ -1086,8 +1086,24 @@ function App() {
               path="/COMP4541_Project/buyer"
               element={<BuyerView web3={web3} account={buyerAccount} createdOrderIds={createdOrderIds} setCreatedOrderIds={setCreatedOrderIds}  sellerAddress={sellerAccount} contractAddress={contractAddress} contractABI={contractABI} contract={contractInstance} />}
             />
-            <Route path="/" element={<Navigate to="/COMP4541_Project/buyer" replace />} />
-            <Route path="/COMP4541_Project" element={<Navigate to="/COMP4541_Project/buyer" replace />} />
+            <Route
+              path="/"
+              element={
+                <div className="welcome-container">
+                  <h1>Welcome to the DeFi Payment Demo</h1>
+                  <p>Click on the "Buyer" or "Seller" links in the sidebar to utilize the web application.</p>
+                </div>
+              }
+            />
+            <Route
+              path="/COMP4541_Project"
+              element={
+                <div className="welcome-container">
+                  <h1>Welcome to the DeFi Payment Demo</h1>
+                  <p>--Click on the "Buyer" or "Seller" links in the sidebar to utilize the web application--</p>
+                </div>
+              }
+            />
             <Route
               path="/COMP4541_Project/seller"
               element={<SellerView web3={web3} account={sellerAccount} contract={contractInstance} />}
