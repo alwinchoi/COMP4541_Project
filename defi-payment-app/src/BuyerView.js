@@ -297,9 +297,9 @@ function BuyerView({ web3, account, sellerAddress, createdOrderIds, setCreatedOr
           <button onClick={handleConfirmDelivery} disabled={!account || !orderIdToConfirmDelivery}>
             Confirm Delivered
           </button>
-          </div>
+          </div> */}
           {deliveryConfirmationStatus && <p className="delivery-status">{deliveryConfirmationStatus}</p>}
-      </div> */}
+      </div>
 
     </div>
   );
