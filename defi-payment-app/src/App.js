@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
-import { BrowserRouter as Router, Routes, Route, Link, NavLink, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link, NavLink, Navigate } from 'react-router-dom';
 import './App.css';
 import BuyerView from './BuyerView';
 import SellerView from './SellerView';
