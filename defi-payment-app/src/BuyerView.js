@@ -32,9 +32,9 @@ function BuyerView({ web3, account, sellerAddress, createdOrderIds, setCreatedOr
       console.log("Buyer order IDs:", buyerOrderIds);
       setCreatedOrderIds(buyerOrderIds); // Update state with fetched order IDs
 
-      if (buyerOrderIds.length > 0) {
-        setSelectedOrderIdForInteraction(buyerOrderIds[buyerOrderIds.length - 1]); // Select the latest
-      }
+      // if (buyerOrderIds.length > 0) {
+      //   setSelectedOrderIdForInteraction(buyerOrderIds[buyerOrderIds.length - 1]); // Select the latest
+      // }
     } catch (error) {
       console.error("Error fetching buyer order IDs:", error);
       setTransactionStatus(`Failed to fetch order list: ${error.message}`);
