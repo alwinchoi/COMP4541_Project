@@ -8,7 +8,7 @@ function BuyerView({ web3, account, sellerAddress, createdOrderIds, setCreatedOr
   const [productImage, setProductImage] = useState(image);
   const [productName, setProductName] = useState('Mastering Blockchain Programming with Solidity');
   const [productAuthor, setProductAuthor] = useState('Jitendra Chittoda');
-  const [productPriceETH, setProductPriceETH] = useState('0.0002'); // Example price
+  const [productPriceETH, setProductPriceETH] = useState('0.02'); // Example price
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [selectedPaymentGateway, setSelectedPaymentGateway] = useState('defi');
   const [orderId, setOrderId] = useState(null); // To store the ID of the currently created order
