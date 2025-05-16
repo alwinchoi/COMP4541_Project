@@ -1,0 +1,713 @@
+Using contract tester version 0.7.6
+(1/3)🧬Compiling contract: defi_code_20754097_1747397205.sol
+[✅PASS]Compilation
+(2/3)🤖Generating test case for: defi_code_20754097_1747397205.sol
+[✅PASS]Read contract
+[ℹ️INFO] Contract file already exists in destination, skipping adjust.
+[⚠️WARNING]No </think> tag found in input
+[✅PASS]Test case generation
+[✅PASS]Write test contract file
+(3/3)🧪Running tests in defi_code_20754097_1747397205.t.sol
+(🧪Attempt 1/3)
+[ℹ️INFO] Encountered compilation error, applying automatic fixer
+[⚠️WARNING]No </think> tag found in input
+[✅PASS]Corrected test contract with compilation error
+[✅PASS]Updated test file
+(🧪Attempt 2/3)
+[ℹ️INFO] Encountered compilation error, applying automatic fixer
+[⚠️WARNING]No </think> tag found in input
+[✅PASS]Corrected test contract with compilation error
+[✅PASS]Updated test file
+(🧪Attempt 3/3)
+[DEBUG]STDOUT
+Compiling 1 files with Solc 0.8.28
+Solc 0.8.28 finished in 827.16ms
+Compiler run successful with warnings:
+Warning (2072): Unused local variable.
+   --> test/defi_code_20754097_1747397205.t.sol:196:9:
+    |
+196 |         uint256 disputeId = gateway.reportDispute(orderId, "Not as described", "http://evidence.com");
+    |         ^^^^^^^^^^^^^^^^^
+
+Warning (2072): Unused local variable.
+   --> test/defi_code_20754097_1747397205.t.sol:291:9:
+    |
+291 |         uint256 orderId = createOrderAsBuyer();
+    |         ^^^^^^^^^^^^^^^
+
+
+Ran 23 tests for test/defi_code_20754097_1747397205.t.sol:DeFiPaymentGatewayTest
+[PASS] test_confirmDelivery_AccessControl() (gas: 306899)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [306899] DeFiPaymentGatewayTest::test_confirmDelivery_AccessControl()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(RIPEMD-160: [0x0000000000000000000000000000000000000003])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  &Only buyer of this order can call this)
+    │   └─ ← [Return] 
+    ├─ [1040] DeFiPaymentGateway::confirmDelivery(1)
+    │   └─ ← [Revert] revert: Only buyer of this order can call this
+    └─ ← [Stop] 
+
+[PASS] test_confirmDelivery_Fail_NotBuyer() (gas: 306876)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [306876] DeFiPaymentGatewayTest::test_confirmDelivery_Fail_NotBuyer()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(RIPEMD-160: [0x0000000000000000000000000000000000000003])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  &Only buyer of this order can call this)
+    │   └─ ← [Return] 
+    ├─ [1040] DeFiPaymentGateway::confirmDelivery(1)
+    │   └─ ← [Revert] revert: Only buyer of this order can call this
+    └─ ← [Stop] 
+
+[PASS] test_confirmDelivery_Success() (gas: 329118)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [351818] DeFiPaymentGatewayTest::test_confirmDelivery_Success()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [38503] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [60] PRECOMPILES::sha256{value: 1000000000000000000}(0x)
+    │   │   └─ ← [Return] 0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    │   ├─ emit PaymentSent(orderId: 1, recipient: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [3411] DeFiPaymentGateway::getOrderDetails(1) [staticcall]
+    │   └─ ← [Return] Order({ buyer: 0x0000000000000000000000000000000000000001, merchant: 0x0000000000000000000000000000000000000002, amount: 0, status: 1000000000000000000 [1e18], disputeId: 2, refundAmount: 0, deliveryConfirmationTime: 0 })
+    ├─ [0] VM::assertEq(2, 2, "Order status should be Delivered") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertGt(1, 0, "Delivery confirmation time should be set") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertEq(11000000000000000000 [1.1e19], 11000000000000000000 [1.1e19], "Merchant should receive the order value") [staticcall]
+    │   └─ ← [Return] 
+    └─ ← [Stop] 
+
+[PASS] test_createOrder_FailZeroValue() (gas: 15545)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [15545] DeFiPaymentGatewayTest::test_createOrder_FailZeroValue()
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  &Order amount must be greater than zero)
+    │   └─ ← [Return] 
+    ├─ [837] DeFiPaymentGateway::createOrder(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Revert] revert: Order amount must be greater than zero
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return] 
+    └─ ← [Stop] 
+
+[PASS] test_createOrder_Success() (gas: 288609)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [288609] DeFiPaymentGatewayTest::test_createOrder_Success()
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::assertEq(1, 1, "Order ID should be 1 for first order") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [3411] DeFiPaymentGateway::getOrderDetails(1) [staticcall]
+    │   └─ ← [Return] Order({ buyer: 0x0000000000000000000000000000000000000001, merchant: 0x0000000000000000000000000000000000000002, amount: 1000000000000000000 [1e18], status: 1000000000000000000 [1e18], disputeId: 0, refundAmount: 0, deliveryConfirmationTime: 0 })
+    ├─ [0] VM::assertEq(SHA-256: [0x0000000000000000000000000000000000000002], SHA-256: [0x0000000000000000000000000000000000000002], "Merchant must match") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertEq(1000000000000000000 [1e18], 1000000000000000000 [1e18], "Order amount must match the sent value") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertEq(0, 0, "Order status should be Created") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return] 
+    └─ ← [Stop] 
+
+[PASS] test_getDisputeDetails_Success() (gas: 588193)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [610893] DeFiPaymentGatewayTest::test_getDisputeDetails_Success()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [38503] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [60] PRECOMPILES::sha256{value: 1000000000000000000}(0x)
+    │   │   └─ ← [Return] 0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    │   ├─ emit PaymentSent(orderId: 1, recipient: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [251582] DeFiPaymentGateway::reportDispute(1, "Test dispute", "http://evidence.com")
+    │   ├─ emit DisputeReported(disputeId: 1, customer: ECRecover: [0x0000000000000000000000000000000000000001], orderId: 1)
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(RIPEMD-160: [0x0000000000000000000000000000000000000003])
+    │   └─ ← [Return] 
+    ├─ [4539] DeFiPaymentGateway::getDisputeDetails(1) [staticcall]
+    │   └─ ← [Return] Dispute({ customer: 0x0000000000000000000000000000000000000001, merchant: 0x0000000000000000000000000000000000000002, reason: "Test dispute", evidence: "http://evidence.com", resolvedStatus: 0, reportedTime: 1 })
+    ├─ [0] VM::assertEq(ECRecover: [0x0000000000000000000000000000000000000001], ECRecover: [0x0000000000000000000000000000000000000001], "Dispute customer should be the buyer") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertEq(SHA-256: [0x0000000000000000000000000000000000000002], SHA-256: [0x0000000000000000000000000000000000000002], "Dispute merchant should match") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertEq("Test dispute", "Test dispute", "Dispute reason should match") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertGt(1, 0, "Reported time must be non-zero") [staticcall]
+    │   └─ ← [Return] 
+    └─ ← [Stop] 
+
+[PASS] test_getOrderDetails_Fail() (gas: 286110)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [286110] DeFiPaymentGatewayTest::test_getOrderDetails_Fail()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(RIPEMD-160: [0x0000000000000000000000000000000000000003])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  5Only buyer or merchant of this order can view details)
+    │   └─ ← [Return] 
+    ├─ [1475] DeFiPaymentGateway::getOrderDetails(1) [staticcall]
+    │   └─ ← [Revert] revert: Only buyer or merchant of this order can view details
+    └─ ← [Stop] 
+
+[PASS] test_getOrderDetails_Success() (gas: 291364)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [291364] DeFiPaymentGatewayTest::test_getOrderDetails_Success()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [3411] DeFiPaymentGateway::getOrderDetails(1) [staticcall]
+    │   └─ ← [Return] Order({ buyer: 0x0000000000000000000000000000000000000001, merchant: 0x0000000000000000000000000000000000000002, amount: 1000000000000000000 [1e18], status: 1000000000000000000 [1e18], disputeId: 0, refundAmount: 0, deliveryConfirmationTime: 0 })
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [3650] DeFiPaymentGateway::getOrderDetails(1) [staticcall]
+    │   └─ ← [Return] Order({ buyer: 0x0000000000000000000000000000000000000001, merchant: 0x0000000000000000000000000000000000000002, amount: 1000000000000000000 [1e18], status: 1000000000000000000 [1e18], disputeId: 0, refundAmount: 0, deliveryConfirmationTime: 0 })
+    └─ ← [Stop] 
+
+[PASS] test_getSellerDisputeIds_Fail() (gas: 16473)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [16473] DeFiPaymentGatewayTest::test_getSellerDisputeIds_Fail()
+    ├─ [0] VM::prank(RIPEMD-160: [0x0000000000000000000000000000000000000003])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  *Only the seller can view their dispute IDs)
+    │   └─ ← [Return] 
+    ├─ [831] DeFiPaymentGateway::getSellerDisputeIds(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Revert] revert: Only the seller can view their dispute IDs
+    └─ ← [Stop] 
+
+[PASS] test_getSellerDisputeIds_Success() (gas: 577698)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [600398] DeFiPaymentGatewayTest::test_getSellerDisputeIds_Success()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [38503] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [60] PRECOMPILES::sha256{value: 1000000000000000000}(0x)
+    │   │   └─ ← [Return] 0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    │   ├─ emit PaymentSent(orderId: 1, recipient: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [251582] DeFiPaymentGateway::reportDispute(1, "Issue", "http://evidence.com")
+    │   ├─ emit DisputeReported(disputeId: 1, customer: ECRecover: [0x0000000000000000000000000000000000000001], orderId: 1)
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [1807] DeFiPaymentGateway::getSellerDisputeIds(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Return] [1]
+    ├─ [0] VM::assertTrue(true, "Merchant should have dispute IDs") [staticcall]
+    │   └─ ← [Return] 
+    └─ ← [Stop] 
+
+[PASS] test_getSellerOrderIds_Fail() (gas: 16539)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [16539] DeFiPaymentGatewayTest::test_getSellerOrderIds_Fail()
+    ├─ [0] VM::prank(RIPEMD-160: [0x0000000000000000000000000000000000000003])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  (Only the seller can view their order IDs)
+    │   └─ ← [Return] 
+    ├─ [875] DeFiPaymentGateway::getSellerOrderIds(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Revert] revert: Only the seller can view their order IDs
+    └─ ← [Stop] 
+
+[PASS] test_getSellerOrderIds_Success() (gas: 283224)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [283224] DeFiPaymentGatewayTest::test_getSellerOrderIds_Success()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [1851] DeFiPaymentGateway::getSellerOrderIds(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Return] [1]
+    ├─ [0] VM::assertTrue(true, "Seller should have at least one order") [staticcall]
+    │   └─ ← [Return] 
+    └─ ← [Stop] 
+
+[PASS] test_markOrderShipped_AccessControl() (gas: 283114)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [283114] DeFiPaymentGatewayTest::test_markOrderShipped_AccessControl()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(RIPEMD-160: [0x0000000000000000000000000000000000000003])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  )Only merchant of this order can call this)
+    │   └─ ← [Return] 
+    ├─ [1066] DeFiPaymentGateway::markOrderShipped(1)
+    │   └─ ← [Revert] revert: Only merchant of this order can call this
+    └─ ← [Stop] 
+
+[PASS] test_markOrderShipped_Fail_NotMerchant() (gas: 283114)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [283114] DeFiPaymentGatewayTest::test_markOrderShipped_Fail_NotMerchant()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(RIPEMD-160: [0x0000000000000000000000000000000000000003])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  )Only merchant of this order can call this)
+    │   └─ ← [Return] 
+    ├─ [1066] DeFiPaymentGateway::markOrderShipped(1)
+    │   └─ ← [Revert] revert: Only merchant of this order can call this
+    └─ ← [Stop] 
+
+[PASS] test_markOrderShipped_Success() (gas: 309554)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [309554] DeFiPaymentGatewayTest::test_markOrderShipped_Success()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [3411] DeFiPaymentGateway::getOrderDetails(1) [staticcall]
+    │   └─ ← [Return] Order({ buyer: 0x0000000000000000000000000000000000000001, merchant: 0x0000000000000000000000000000000000000002, amount: 1000000000000000000 [1e18], status: 1000000000000000000 [1e18], disputeId: 1, refundAmount: 0, deliveryConfirmationTime: 0 })
+    ├─ [0] VM::assertEq(1, 1, "Order status should be Shipped") [staticcall]
+    │   └─ ← [Return] 
+    └─ ← [Stop] 
+
+[PASS] test_rateMerchant_Fail_InvalidRating() (gas: 328571)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [351271] DeFiPaymentGatewayTest::test_rateMerchant_Fail_InvalidRating()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [38503] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [60] PRECOMPILES::sha256{value: 1000000000000000000}(0x)
+    │   │   └─ ← [Return] 0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    │   ├─ emit PaymentSent(orderId: 1, recipient: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  Rating must be between 1 and 5)
+    │   └─ ← [Return] 
+    ├─ [2120] DeFiPaymentGateway::rateMerchant(SHA-256: [0x0000000000000000000000000000000000000002], 6, "Too high", 1)
+    │   └─ ← [Revert] revert: Rating must be between 1 and 5
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  Rating must be between 1 and 5)
+    │   └─ ← [Return] 
+    ├─ [2106] DeFiPaymentGateway::rateMerchant(SHA-256: [0x0000000000000000000000000000000000000002], 0, "Too low", 1)
+    │   └─ ← [Revert] revert: Rating must be between 1 and 5
+    └─ ← [Stop] 
+
+[PASS] test_rateMerchant_Success() (gas: 536601)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [559301] DeFiPaymentGatewayTest::test_rateMerchant_Success()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [38503] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [60] PRECOMPILES::sha256{value: 1000000000000000000}(0x)
+    │   │   └─ ← [Return] 0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    │   ├─ emit PaymentSent(orderId: 1, recipient: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [206985] DeFiPaymentGateway::rateMerchant(SHA-256: [0x0000000000000000000000000000000000000002], 5, "Excellent service", 1)
+    │   ├─ emit RatingGiven(merchant: SHA-256: [0x0000000000000000000000000000000000000002], rating: 5, comment: "Excellent service", rater: ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Stop] 
+    ├─ [874] DeFiPaymentGateway::getMerchantAverageRating(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Return] 5
+    ├─ [0] VM::assertEq(5, 5, "Merchant average rating should equal given rating") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  "You have already rated this order.)
+    │   └─ ← [Return] 
+    ├─ [2782] DeFiPaymentGateway::rateMerchant(SHA-256: [0x0000000000000000000000000000000000000002], 5, "Excellent service", 1)
+    │   └─ ← [Revert] revert: You have already rated this order.
+    └─ ← [Stop] 
+
+[PASS] test_refundFromSeller_Fail_IncorrectRefund() (gas: 586124)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [608824] DeFiPaymentGatewayTest::test_refundFromSeller_Fail_IncorrectRefund()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [38503] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [60] PRECOMPILES::sha256{value: 1000000000000000000}(0x)
+    │   │   └─ ← [Return] 0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    │   ├─ emit PaymentSent(orderId: 1, recipient: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [251582] DeFiPaymentGateway::reportDispute(1, "Not as described", "http://evidence.com")
+    │   ├─ emit DisputeReported(disputeId: 1, customer: ECRecover: [0x0000000000000000000000000000000000000001], orderId: 1)
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  2Refund amount must match the original order amount)
+    │   └─ ← [Return] 
+    ├─ [4737] DeFiPaymentGateway::refundFromSeller{value: 900000000000000000}(1)
+    │   └─ ← [Revert] revert: Refund amount must match the original order amount
+    └─ ← [Stop] 
+
+[PASS] test_refundFromSeller_Fail_NotMerchant() (gas: 584202)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [606902] DeFiPaymentGatewayTest::test_refundFromSeller_Fail_NotMerchant()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [38503] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [60] PRECOMPILES::sha256{value: 1000000000000000000}(0x)
+    │   │   └─ ← [Return] 0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    │   ├─ emit PaymentSent(orderId: 1, recipient: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [251582] DeFiPaymentGateway::reportDispute(1, "Issue", "http://evidence.com")
+    │   ├─ emit DisputeReported(disputeId: 1, customer: ECRecover: [0x0000000000000000000000000000000000000001], orderId: 1)
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(RIPEMD-160: [0x0000000000000000000000000000000000000003])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  )Only merchant of this order can call this)
+    │   └─ ← [Return] 
+    ├─ [976] DeFiPaymentGateway::refundFromSeller{value: 1000000000000000000}(1)
+    │   └─ ← [Revert] revert: Only merchant of this order can call this
+    └─ ← [Stop] 
+
+[PASS] test_refundFromSeller_Success() (gas: 646340)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [671840] DeFiPaymentGatewayTest::test_refundFromSeller_Success()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [38503] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [60] PRECOMPILES::sha256{value: 1000000000000000000}(0x)
+    │   │   └─ ← [Return] 0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    │   ├─ emit PaymentSent(orderId: 1, recipient: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [251582] DeFiPaymentGateway::reportDispute(1, "Not as described", "http://evidence.com")
+    │   ├─ emit DisputeReported(disputeId: 1, customer: ECRecover: [0x0000000000000000000000000000000000000001], orderId: 1)
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [59167] DeFiPaymentGateway::refundFromSeller{value: 1000000000000000000}(1)
+    │   ├─ emit DisputeResolved(disputeId: 1, resolvedStatus: 4)
+    │   ├─ [3000] ECRecover::fallback{value: 1000000000000000000}()
+    │   │   └─ ← [Return] 
+    │   ├─ emit RefundInitiated(orderId: 1, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [3411] DeFiPaymentGateway::getOrderDetails(1) [staticcall]
+    │   └─ ← [Return] Order({ buyer: 0x0000000000000000000000000000000000000001, merchant: 0x0000000000000000000000000000000000000002, amount: 0, status: 1000000000000000000 [1e18], disputeId: 4, refundAmount: 1, deliveryConfirmationTime: 1000000000000000000 [1e18] })
+    ├─ [0] VM::assertEq(4, 4, "Order status should be Refunded") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertEq(10000000000000000000 [1e19], 10000000000000000000 [1e19], "Buyer should receive refund amount") [staticcall]
+    │   └─ ← [Return] 
+    └─ ← [Stop] 
+
+[PASS] test_reportDispute_Fail_BeforeDelivery() (gas: 283192)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [283192] DeFiPaymentGatewayTest::test_reportDispute_Fail_BeforeDelivery()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  2Cannot report dispute before delivery confirmation)
+    │   └─ ← [Return] 
+    ├─ [2680] DeFiPaymentGateway::reportDispute(1, "Late delivery", "http://evidence.com")
+    │   └─ ← [Revert] revert: Cannot report dispute before delivery confirmation
+    └─ ← [Stop] 
+
+[PASS] test_reportDispute_Fail_WindowExpired() (gas: 325453)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [348153] DeFiPaymentGatewayTest::test_reportDispute_Fail_WindowExpired()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [38503] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [60] PRECOMPILES::sha256{value: 1000000000000000000}(0x)
+    │   │   └─ ← [Return] 0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    │   ├─ emit PaymentSent(orderId: 1, recipient: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [0] VM::warp(604802 [6.048e5])
+    │   └─ ← [Return] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  Dispute window has expired)
+    │   └─ ← [Return] 
+    ├─ [3054] DeFiPaymentGateway::reportDispute(1, "Issue after window", "http://evidence.com")
+    │   └─ ← [Revert] revert: Dispute window has expired
+    └─ ← [Stop] 
+
+[PASS] test_reportDispute_Success() (gas: 589546)
+Logs:
+  DeFiPaymentGateway deployed, owner: 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496
+
+Traces:
+  [612246] DeFiPaymentGatewayTest::test_reportDispute_Success()
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   ├─ emit OrderCreated(orderId: 1, buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: ECRecover: [0x0000000000000000000000000000000000000001], merchant: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [38503] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [60] PRECOMPILES::sha256{value: 1000000000000000000}(0x)
+    │   │   └─ ← [Return] 0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    │   ├─ emit PaymentSent(orderId: 1, recipient: SHA-256: [0x0000000000000000000000000000000000000002], amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [251582] DeFiPaymentGateway::reportDispute(1, "Item not as described", "http://evidence.com")
+    │   ├─ emit DisputeReported(disputeId: 1, customer: ECRecover: [0x0000000000000000000000000000000000000001], orderId: 1)
+    │   └─ ← [Return] 1
+    ├─ [4539] DeFiPaymentGateway::getDisputeDetails(1) [staticcall]
+    │   └─ ← [Return] Dispute({ customer: 0x0000000000000000000000000000000000000001, merchant: 0x0000000000000000000000000000000000000002, reason: "Item not as described", evidence: "http://evidence.com", resolvedStatus: 0, reportedTime: 1 })
+    ├─ [0] VM::assertEq("Item not as described", "Item not as described", "Dispute reason should match") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::prank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return] 
+    ├─ [3411] DeFiPaymentGateway::getOrderDetails(1) [staticcall]
+    │   └─ ← [Return] Order({ buyer: 0x0000000000000000000000000000000000000001, merchant: 0x0000000000000000000000000000000000000002, amount: 0, status: 1000000000000000000 [1e18], disputeId: 3, refundAmount: 1, deliveryConfirmationTime: 0 })
+    ├─ [0] VM::assertEq(3, 3, "Order status should be Disputed") [staticcall]
+    │   └─ ← [Return] 
+    └─ ← [Stop] 
+
+Suite result: ok. 23 passed; 0 failed; 0 skipped; finished in 5.81ms (3.31ms CPU time)
+
+Ran 1 test suite in 1.51s (5.81ms CPU time): 23 tests passed, 0 failed, 0 skipped (23 total tests)
+
+🧹Start Cleaning
+[✅PASS]Moved test file to 'finished'

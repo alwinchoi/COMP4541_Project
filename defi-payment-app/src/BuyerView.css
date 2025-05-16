@@ -1,84 +1,89 @@
+/* BuyerView.css */
 .buyer-view-container {
     padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
   
   .product-details {
     display: flex;
     gap: 30px;
-    margin-bottom: 30px;
-    align-items: flex-start;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 30px;
   }
   
-  .product-image img {
+  .product-image {
     max-width: 300px;
     height: auto;
     border-radius: 8px;
+    overflow: hidden;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .product-image img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
   
   .product-info {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
   
   .product-title {
-    font-size: 2.5em;
+    font-size: 2em;
     margin-bottom: 5px;
     color: #333;
   }
   
   .product-author {
-    font-size: 1.1em;
-    color: #6c757d;
-    margin-bottom: 15px;
+    font-style: italic;
+    color: #777;
+    margin-bottom: 10px;
   }
   
   .product-pricing {
-    font-size: 1.5em;
-    color: #28a745;
-    margin-bottom: 20px;
-  }
-  
-  .price-eth {
+    font-size: 1.2em;
     font-weight: bold;
+    color: #28a745;
   }
   
   .price-total {
     margin-left: 10px;
-    color: #6c757d;
     font-size: 0.9em;
+    color: #777;
   }
   
   .quantity-selector {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    gap: 10px;
   }
   
   .quantity-selector label {
-    margin-right: 10px;
     font-weight: bold;
-    color: #333;
   }
   
   .quantity-selector input[type="number"] {
     width: 60px;
     padding: 8px;
-    border: 1px solid #ced4da;
+    border: 1px solid #ccc;
     border-radius: 4px;
-    text-align: center;
   }
   
   .buy-now-button {
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 12px 25px;
     border-radius: 5px;
+    padding: 12px 20px;
+    width: 200px;
+    font-size: 1em;
     cursor: pointer;
-    font-size: 1.2em;
     transition: background-color 0.3s ease;
   }
   
@@ -91,6 +96,17 @@
     margin-top: 10px;
   }
   
+  .order-id {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  
+  .transaction-status {
+    margin-top: 10px;
+    color: #17a2b8;
+  }
+  
+  /* Payment Modal Styles */
   .payment-modal {
     position: fixed;
     top: 50%;
@@ -99,37 +115,41 @@
     background-color: white;
     padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
   }
   
   .payment-modal h3 {
-    margin-bottom: 20px;
+    margin-top: 0;
     color: #333;
-    text-align: center;
   }
   
   .payment-options {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-bottom: 20px;
+    gap: 10px;
+    width: 100%;
   }
   
   .payment-option {
     display: flex;
     align-items: center;
     padding: 10px;
-    border: 1px solid #ced4da;
+    border: 1px solid #eee;
     border-radius: 4px;
+    cursor: pointer;
   }
   
   .payment-option input[type="radio"] {
     margin-right: 10px;
   }
   
-  .gateway-name {
-    color: #333;
+  .payment-option .gateway-name {
+    flex-grow: 1;
   }
   
   .payment-option.disabled {
@@ -139,23 +159,20 @@
   
   .payment-actions {
     display: flex;
-    gap: 10px;
-    justify-content: flex-end;
+    gap: 15px;
   }
   
-  .place-order-button,
-  .cancel-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  .payment-actions button {
+    padding: 10px 15px;
+    border-radius: 5px;
     font-size: 1em;
-    transition: background-color 0.3s ease;
+    cursor: pointer;
   }
   
   .place-order-button {
     background-color: #28a745;
     color: white;
+    border: none;
   }
   
   .place-order-button:hover {
@@ -165,38 +182,119 @@
   .cancel-button {
     background-color: #dc3545;
     color: white;
+    border: none;
   }
   
   .cancel-button:hover {
     background-color: #c82333;
   }
   
-  .order-id,
-  .transaction-status {
-    margin-top: 15px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-    color: #555;
-  }
-  
+  /* Seller Interaction Section */
   .seller-interaction-section {
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
   }
   
   .seller-interaction-section h3 {
-    color: #333;
+    margin-top: 0;
+    color: #555;
     margin-bottom: 15px;
   }
   
+  .order-selection {
+    display: flex; /* Arrange label and select in a row */
+    align-items: center; /* Vertically align label and select */
+    gap: 10px; /* Space between label and select */
+    width: 400px;
+    margin-bottom: 15px; /* Space below the component */
+  }
+  
+  .order-selection label {
+    font-weight: bold;
+  }
+  
+  .order-selection select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    /* Adjust width as needed */
+    width: auto; /*Takes width based on content*/
+    /* or a fixed width */
+    /* width: 200px; */
+    flex-grow: 1; /* Allows it to take more space if available */
+  }
+  
+  .order-selection select option {
+    font-size: 1rem;
+  }
+
   .interaction-components {
     display: flex;
     gap: 20px;
   }
   
-  .interaction-prompt {
-    color: #6c757d;
+  .interaction-box {
+    flex: 1;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
+  
+  .interaction-box h4 {
+    margin-top: 0;
+    color: #777;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+  }
+
+  .delivery-confirmation-section {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.confirm-delivery-input {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.confirm-delivery-input label {
+  font-weight: bold;
+}
+
+.confirm-delivery-input input[type="number"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  flex-grow: 1;
+}
+
+.confirm-delivery-input button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.confirm-delivery-input button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.delivery-status {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: green;
+}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './disputeComponent.css'; // Import specific CSS for this view
 
 function DisputeComponent({ web3, account, contract, orderId }) {
   const [reason, setReason] = useState('');
@@ -39,7 +40,6 @@ function DisputeComponent({ web3, account, contract, orderId }) {
 
   return (
     <div className="dispute-component">
-      <h4>Report Dispute</h4>
       <textarea
         placeholder="Reason for dispute"
         value={reason}

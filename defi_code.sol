@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
+// make sure the imports of forged-std is the correct vrsion and compatible
+// DONT USE MarvinSC_20855384_1747323507
 
 import { Ownable } from "openzeppelin-contracts/access/Ownable.sol";
+import { ReentrancyGuard } from "openzeppelin-contracts/utils/ReentrancyGuard.sol";
 
-contract DeFiPaymentGateway is Ownable {
+contract DeFiPaymentGateway is Ownable, ReentrancyGuard {
     // Order status enum
     enum OrderStatus {
         Created,
@@ -17,7 +20,8 @@ contract DeFiPaymentGateway is Ownable {
     struct Order {
         address buyer;
         address merchant;
-        uint256 amount;
+        uint256 amount; // amount paid by buyer
+        uint256 originalAmount; // store initial amount for refunds
         OrderStatus status;
         uint256 disputeId;
         uint256 refundAmount;
@@ -62,6 +66,13 @@ contract DeFiPaymentGateway is Ownable {
     uint256 public orderCounter;
     // Dispute counter
     uint256 public disputeCounter;
+    // Mapping to track if rating has been given for orderId
+    mapping(address => mapping(uint256 => bool)) public hasRatedOrder;
+    // Mapping to track order IDs for each buyer
+    mapping(address => uint256[]) public buyerOrders;
+
+    mapping(address => uint256) public merchantAverageRating;
+    mapping(address => uint256) public merchantRatingCount;
 
     // Events
     event OrderCreated(uint256 orderId, address buyer, address merchant, uint256 amount);
@@ -72,6 +83,7 @@ contract DeFiPaymentGateway is Ownable {
     event RatingGiven(address merchant, uint256 rating, string comment, address rater);
     event Purchase(address buyer, address merchant, uint256 amount);
     event RefundInitiated(uint256 orderId, uint256 amount);
+    event PaymentSent(uint256 orderId, address recipient, uint256 amount); // Define the PaymentSent event
 
     // Constants for dispute window (e.g., 7 days in seconds)
     uint256 public constant DISPUTE_WINDOW = 7 days;
@@ -100,16 +112,12 @@ contract DeFiPaymentGateway is Ownable {
         _;
     }
 
-    // Modifier to check if the caller is the merchant of the dispute
-    modifier onlyDisputeMerchant(uint256 disputeId) {
-        require(disputes[disputeId].merchant == msg.sender, "Only merchant of this dispute can call this");
+    // Modifier to check if it is the related seller and buyer
+    modifier onlyOrderParticipant(uint256 orderId) {
+        require(orders[orderId].buyer == msg.sender || orders[orderId].merchant == msg.sender, "Only buyer or merchant of this order can view details");
         _;
     }
 
-    modifier onlyResolved(uint256 disputeId) {
-        require(disputes[disputeId].resolvedStatus != OrderStatus.Created, "Dispute already resolved");
-        _;
-    }
 
     /**
      * @notice Constructor.
@@ -136,12 +144,14 @@ contract DeFiPaymentGateway is Ownable {
             buyer: msg.sender,
             merchant: merchant,
             amount: msg.value,
+            originalAmount: msg.value,
             status: OrderStatus.Created,
             disputeId: 0,
             refundAmount: 0,
             deliveryConfirmationTime: 0
         });
         sellerOrders[merchant].push(orderId);
+        buyerOrders[msg.sender].push(orderId);
         allOrderIds.push(orderId);
 
         emit OrderCreated(orderId, msg.sender, merchant, msg.value);
@@ -172,14 +182,28 @@ contract DeFiPaymentGateway is Ownable {
      * @dev Requires the order status to be Shipped.
      * @dev Emits OrderDelivered event.
      */
-    function confirmDelivery(uint256 orderId) external onlyBuyer(orderId) onlyShipped(orderId) {
+    function confirmDelivery(uint256 orderId) external onlyBuyer(orderId) onlyShipped(orderId) nonReentrant payable {
         // Input: uint256 orderId
         // Expected Output: None
         // Callable By: Buyer
+        require(orders[orderId].status == OrderStatus.Shipped, "Order not shipped"); // Re-assert for clarity
+        require(orders[orderId].status != OrderStatus.Delivered, "Order has already been confirmed as delivered");
+
         orders[orderId].status = OrderStatus.Delivered;
         orders[orderId].deliveryConfirmationTime = block.timestamp;
         emit OrderDelivered(orderId);
         // Expected error if not buyer: OwnableUnauthorizedAccount(address)
+
+        // Transfer payment to the merchant
+        uint256 amountToTransfer = orders[orderId].amount;
+        require(amountToTransfer > 0, "No funds to transfer to the merchant"); 
+        orders[orderId].amount = 0; // Prevent paying out again
+        
+        (bool success, ) = payable(orders[orderId].merchant).call{ value: amountToTransfer }("");
+        require(success, "Payment to merchant failed");
+        
+        // Optionally emit an event for payment being sent
+        emit PaymentSent(orderId, orders[orderId].merchant, amountToTransfer);
     }
 
     /**
@@ -196,8 +220,9 @@ contract DeFiPaymentGateway is Ownable {
         // Input: uint256 orderId, string reason, string evidence
         // Expected Output: uint256 disputeId
         // Callable By: Buyer
-        require(orders[orderId].status != OrderStatus.Created, "Cannot report dispute for a created order");
+        require(orders[orderId].status == OrderStatus.Delivered, "Cannot report dispute before delivery confirmation");
         require(block.timestamp <= orders[orderId].deliveryConfirmationTime + DISPUTE_WINDOW, "Dispute window has expired");
+        require(orders[orderId].disputeId == 0, "A dispute has already been reported for this order"); // Prevent multiple reports
 
         disputeCounter++;
         disputeId = disputeCounter;
@@ -219,53 +244,29 @@ contract DeFiPaymentGateway is Ownable {
     }
 
     /**
-     * @notice Resolves a dispute and fully refunds the buyer. 
-     * @notice Expected error if not owner: OwnableUnauthorizedAccount(address)
-     * @dev Can only be called by the owner of the contract.
-     * @param disputeId The ID of the dispute to resolve.
-     * @param resolvedStatus The resolved status of the order (must be Refunded for full refund).
-     */
-    function resolveDispute(uint256 disputeId, OrderStatus resolvedStatus) external onlyOwner {
-        // Input: uint256 disputeId, OrderStatus resolvedStatus (must be Refunded for full refund)
-        // Expected Output: None
-        // Callable By: Owner
-        require(disputes[disputeId].resolvedStatus == OrderStatus.Created, "Dispute already resolved");
-        disputes[disputeId].resolvedStatus = resolvedStatus;
-        uint256 orderId = _getOrderIdFromDisputeId(disputeId);
-        require(orderId != 0, "Order Id not found for this dispute");
-
-        orders[orderId].status = resolvedStatus;
-
-        if (resolvedStatus == OrderStatus.Refunded) {
-            uint256 amountToRefund = orders[orderId].amount;
-            orders[orderId].refundAmount = amountToRefund;
-            (bool success, ) = payable(orders[orderId].buyer).call{ value: amountToRefund }("");
-            require(success, "Refund transfer failed");
-            emit RefundInitiated(orderId, amountToRefund);
-        }
-
-        emit DisputeResolved(disputeId, resolvedStatus);
-        // Expected error if not owner: OwnableUnauthorizedAccount(address)
-    }
-
-    /**
-     * @notice Allows the seller to fully refund the buyer.
-     * @dev Can only be called by the merchant of the order.
-     * @param orderId The ID of the order to refund.
-     */
-    function refundFromSeller(uint256 orderId) external onlyOrderMerchant(orderId) {
+    * @notice Allows the seller to fully refund the buyer and resolves the associated dispute.
+    * @dev Can only be called by the merchant of the order.
+    * @param orderId The ID of the order to refund.
+    */
+    function refundFromSeller(uint256 orderId) external onlyOrderMerchant(orderId) nonReentrant payable {
         // Input: uint256 orderId
         // Expected Output: None
         // Callable By: Merchant
-        require(orders[orderId].status != OrderStatus.Delivered, "Order already delivered, use dispute if needed for full refund");
+        require(orders[orderId].status == OrderStatus.Disputed, "Order must be in Disputed status for a refund");
+        require(orders[orderId].disputeId > 0, "Order does not have an associated dispute");
+        require(msg.value == orders[orderId].originalAmount, "Refund amount must match the original order amount"); // Ensure seller sends the correct amount
 
-        uint256 amountToRefund = orders[orderId].amount;
-        orders[orderId].refundAmount = amountToRefund;
+        // uint256 amountToRefund = orders[orderId].amount;
+        // orders[orderId].refundAmount = amountToRefund;
+        orders[orderId].refundAmount = msg.value;
         orders[orderId].status = OrderStatus.Refunded;
+        disputes[orders[orderId].disputeId].resolvedStatus = OrderStatus.Refunded;
 
-        (bool success, ) = payable(orders[orderId].buyer).call{ value: amountToRefund }("");
+        emit DisputeResolved(orders[orderId].disputeId, OrderStatus.Refunded);
+
+        (bool success, ) = payable(orders[orderId].buyer).call{ value: msg.value }("");
         require(success, "Refund transfer failed");
-        emit RefundInitiated(orderId, amountToRefund);
+        emit RefundInitiated(orderId, msg.value);
         // Expected error if not merchant: OwnableUnauthorizedAccount(address)
     }
 
@@ -284,9 +285,31 @@ contract DeFiPaymentGateway is Ownable {
         // Expected Output: None
         // Callable By: Buyer
         require(rating >= 1 && rating <= 5, "Rating must be between 1 and 5");
-        require(orders[orderId].status == OrderStatus.Delivered, "Order must be delivered to rate");
+        // require(orders[orderId].status == OrderStatus.Delivered, "Order must be delivered to rate");
+        require(orders[orderId].status == OrderStatus.Delivered ||
+        orders[orderId].status == OrderStatus.Disputed ||
+        orders[orderId].status == OrderStatus.Refunded,
+        "Has to be shipped and delivered first");
+
+        require(!hasRatedOrder[msg.sender][orderId], "You have already rated this order.");
+
+        require(merchant == orders[orderId].merchant, "Incorrect merchant address for this order");
+
+        // Update average rating and count
+        uint256 currentAverage = merchantAverageRating[merchant];
+        uint256 currentCount = merchantRatingCount[merchant];
+        uint256 newAverage;
+        if (currentCount == 0) {
+            newAverage = rating;
+        } else {
+            newAverage = ((currentAverage * currentCount) + rating) / (currentCount + 1);
+        }
+        merchantAverageRating[merchant] = newAverage;
+        merchantRatingCount[merchant]++;
+
         merchantRatings[merchant].push(Rating(rating, comment, block.timestamp, msg.sender));
         userReputation[msg.sender]++;
+        hasRatedOrder[msg.sender][orderId] = true; // Mark that the buyer has rated this order
         emit RatingGiven(merchant, rating, comment, msg.sender);
         // Expected error if not buyer: OwnableUnauthorizedAccount(address)
     }
@@ -301,16 +324,17 @@ contract DeFiPaymentGateway is Ownable {
         // Input: address merchant
         // Expected Output: uint256 averageRating
         // Callable By: Anyone
-        uint256 totalRating = 0;
-        uint256 numRatings = merchantRatings[merchant].length;
-        if (numRatings == 0) {
-            return 0;
-        }
-        for (uint256 i = 0; i < numRatings; i++) {
-            totalRating += merchantRatings[merchant][i].rating;
-        }
-        averageRating = totalRating / numRatings;
-        return averageRating;
+        return merchantAverageRating[merchant];
+    }
+
+    /**
+    * @notice Gets the list of order IDs for a specific buyer.
+    * @dev Can be called by anyone.
+    * @param buyer The address of the buyer.
+    * @return The array of order IDs for the buyer.
+    */
+    function getBuyerOrderIds(address buyer) external view returns (uint256[] memory) {
+        return buyerOrders[buyer];
     }
 
    /**
@@ -349,11 +373,12 @@ contract DeFiPaymentGateway is Ownable {
      * @param orderId The ID of the order.
      * @return The order details.
      */
-    function getOrderDetails(uint256 orderId) external view returns (Order memory) {
+    function getOrderDetails(uint256 orderId) external view onlyOrderParticipant(orderId) returns (Order memory) {
         // Input: uint256 orderId
         // Expected Output: Order memory
         // Callable By: Anyone
         return orders[orderId];
+        // Expected error if not seller or buyer: "Only buyer or merchant of this order can view details"
     }
 
     /**
@@ -367,28 +392,6 @@ contract DeFiPaymentGateway is Ownable {
         // Expected Output: Dispute memory
         // Callable By: Anyone
         return disputes[disputeId];
-    }
-
-    /**
-     * @notice Gets the list of all order IDs (only for the owner).
-     * @notice Expected error if not owner: OwnableUnauthorizedAccount(address)
-     * @dev Can only be called by the owner.
-     * @return The array of all order IDs.
-     */
-    function getAllOrderIds() external view onlyOwner returns (uint256[] memory) {
-        return allOrderIds;
-        // Expected error if not owner: OwnableUnauthorizedAccount(address)
-    }
-
-    /**
-     * @notice Gets the list of all dispute IDs (only for the owner).
-     * @notice Expected error if not owner: OwnableUnauthorizedAccount(address)
-     * @dev Can only be called by the owner.
-     * @return The array of all dispute IDs.
-     */
-    function getAllDisputeIds() external view onlyOwner returns (uint256[] memory) {
-        return allDisputeIds;
-        // Expected error if not owner: OwnableUnauthorizedAccount(address)
     }
 
     /**

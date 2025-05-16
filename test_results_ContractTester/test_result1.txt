@@ -1,0 +1,426 @@
+Using contract tester version 0.7.6
+(1/3)🧬Compiling contract: defi_code_20754097_1747397205.sol
+[✅PASS]Compilation
+(2/3)🤖Generating test case for: defi_code_20754097_1747397205.sol
+[✅PASS]Read contract
+[ℹ️INFO] Contract file already exists in destination, skipping adjust.
+[⚠️WARNING]No </think> tag found in input
+[✅PASS]Test case generation
+[✅PASS]Write test contract file
+(3/3)🧪Running tests in defi_code_20754097_1747397205.t.sol
+(🧪Attempt 1/3)
+[ℹ️INFO] Encountered compilation error, applying automatic fixer
+[⚠️WARNING]No </think> tag found in input
+[✅PASS]Corrected test contract with compilation error
+[✅PASS]Updated test file
+(🧪Attempt 2/3)
+[DEBUG]STDOUT
+Compiling 1 files with Solc 0.8.28
+Solc 0.8.28 finished in 829.78ms
+Compiler run successful with warnings:
+Warning (2072): Unused local variable.
+   --> test/defi_code_20754097_1747397205.t.sol:198:9:
+    |
+198 |         uint256 disputeId = gateway.reportDispute(orderId, "Item not received", "http://evidence.example.com");
+    |         ^^^^^^^^^^^^^^^^^
+
+Warning (2072): Unused local variable.
+   --> test/defi_code_20754097_1747397205.t.sol:276:9:
+    |
+276 |         uint256 disputeId = gateway.reportDispute(orderId, "Issue", "http://evidence.example.com");
+    |         ^^^^^^^^^^^^^^^^^
+
+
+Ran 11 tests for test/defi_code_20754097_1747397205.t.sol:DeFiPaymentGatewayTest
+[PASS] test_confirmDelivery() (gas: 353893)
+Logs:
+  DeFiPaymentGateway deployed; Owner:  728815563385977040452943777879061427756277306518
+
+Traces:
+  [376593] DeFiPaymentGatewayTest::test_confirmDelivery()
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(0x0000000000000000000000000000000000000200)
+    │   ├─ emit OrderCreated(orderId: 1, buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000200)
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [63368] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [0] 0x0000000000000000000000000000000000000200::fallback{value: 1000000000000000000}()
+    │   │   └─ ← [Stop] 
+    │   ├─ emit PaymentSent(orderId: 1, recipient: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [2628] DeFiPaymentGateway::orders(1) [staticcall]
+    │   └─ ← [Return] 0x0000000000000000000000000000000000000100, 0x0000000000000000000000000000000000000200, 0x0000000000000000000000000000000000000000, 1000000000000000000 [1e18], 2, 0
+    ├─ [0] VM::assertEq(2, 2, "Order should be Delivered") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertEq(1000000000000000000 [1e18], 1000000000000000000 [1e18], "Merchant did not receive correct payment") [staticcall]
+    │   └─ ← [Return] 
+    └─ ← [Stop] 
+
+[PASS] test_confirmDelivery_wrongCaller() (gas: 306853)
+Logs:
+  DeFiPaymentGateway deployed; Owner:  728815563385977040452943777879061427756277306518
+
+Traces:
+  [306853] DeFiPaymentGatewayTest::test_confirmDelivery_wrongCaller()
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(0x0000000000000000000000000000000000000200)
+    │   ├─ emit OrderCreated(orderId: 1, buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000200)
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000300)
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  &Only buyer of this order can call this)
+    │   └─ ← [Return] 
+    ├─ [1040] DeFiPaymentGateway::confirmDelivery(1)
+    │   └─ ← [Revert] revert: Only buyer of this order can call this
+    └─ ← [Stop] 
+
+[PASS] test_createOrder() (gas: 288410)
+Logs:
+  DeFiPaymentGateway deployed; Owner:  728815563385977040452943777879061427756277306518
+
+Traces:
+  [288410] DeFiPaymentGatewayTest::test_createOrder()
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(0x0000000000000000000000000000000000000200)
+    │   ├─ emit OrderCreated(orderId: 1, buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [2628] DeFiPaymentGateway::orders(1) [staticcall]
+    │   └─ ← [Return] 0x0000000000000000000000000000000000000100, 0x0000000000000000000000000000000000000200, 0x0000000000000000000000000de0b6B3a7640000, 1000000000000000000 [1e18], 0, 0
+    ├─ [0] VM::assertEq(0x0000000000000000000000000000000000000100, 0x0000000000000000000000000000000000000100, "Order buyer incorrect") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertEq(0x0000000000000000000000000000000000000200, 0x0000000000000000000000000000000000000200, "Order merchant incorrect") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertEq(1000000000000000000 [1e18], 1000000000000000000 [1e18], "Order amount incorrect") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertEq(1000000000000000000 [1e18], 1000000000000000000 [1e18], "Order original amount incorrect") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertEq(0, 0, "Order status should be Created") [staticcall]
+    │   └─ ← [Return] 
+    └─ ← [Stop] 
+
+[PASS] test_createOrder_zeroAmount() (gas: 14337)
+Logs:
+  DeFiPaymentGateway deployed; Owner:  728815563385977040452943777879061427756277306518
+
+Traces:
+  [14337] DeFiPaymentGatewayTest::test_createOrder_zeroAmount()
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  &Order amount must be greater than zero)
+    │   └─ ← [Return] 
+    ├─ [837] DeFiPaymentGateway::createOrder(0x0000000000000000000000000000000000000200)
+    │   └─ ← [Revert] revert: Order amount must be greater than zero
+    └─ ← [Stop] 
+
+[PASS] test_getOrderDetails_accessControl() (gas: 299466)
+Logs:
+  DeFiPaymentGateway deployed; Owner:  728815563385977040452943777879061427756277306518
+
+Traces:
+  [299466] DeFiPaymentGatewayTest::test_getOrderDetails_accessControl()
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(0x0000000000000000000000000000000000000200)
+    │   ├─ emit OrderCreated(orderId: 1, buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [3411] DeFiPaymentGateway::getOrderDetails(1) [staticcall]
+    │   └─ ← [Return] Order({ buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18], status: 1000000000000000000 [1e18], disputeId: 0, refundAmount: 0, deliveryConfirmationTime: 0 })
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000200)
+    │   └─ ← [Return] 
+    ├─ [3650] DeFiPaymentGateway::getOrderDetails(1) [staticcall]
+    │   └─ ← [Return] Order({ buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18], status: 1000000000000000000 [1e18], disputeId: 0, refundAmount: 0, deliveryConfirmationTime: 0 })
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000300)
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  5Only buyer or merchant of this order can view details)
+    │   └─ ← [Return] 
+    ├─ [1475] DeFiPaymentGateway::getOrderDetails(1) [staticcall]
+    │   └─ ← [Revert] revert: Only buyer or merchant of this order can view details
+    └─ ← [Stop] 
+
+[PASS] test_getSellerOrderAndDisputeIds_accessControl() (gas: 623119)
+Logs:
+  DeFiPaymentGateway deployed; Owner:  728815563385977040452943777879061427756277306518
+
+Traces:
+  [645819] DeFiPaymentGatewayTest::test_getSellerOrderAndDisputeIds_accessControl()
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(0x0000000000000000000000000000000000000200)
+    │   ├─ emit OrderCreated(orderId: 1, buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000200)
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000200)
+    │   └─ ← [Return] 
+    ├─ [1851] DeFiPaymentGateway::getSellerOrderIds(0x0000000000000000000000000000000000000200) [staticcall]
+    │   └─ ← [Return] [1]
+    ├─ [0] VM::assertEq(1, 1, "Seller should have one order") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000300)
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  (Only the seller can view their order IDs)
+    │   └─ ← [Return] 
+    ├─ [875] DeFiPaymentGateway::getSellerOrderIds(0x0000000000000000000000000000000000000200) [staticcall]
+    │   └─ ← [Revert] revert: Only the seller can view their order IDs
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [65868] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [0] 0x0000000000000000000000000000000000000200::fallback{value: 1000000000000000000}()
+    │   │   └─ ← [Stop] 
+    │   ├─ emit PaymentSent(orderId: 1, recipient: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [251582] DeFiPaymentGateway::reportDispute(1, "Issue", "http://evidence.example.com")
+    │   ├─ emit DisputeReported(disputeId: 1, customer: 0x0000000000000000000000000000000000000100, orderId: 1)
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000200)
+    │   └─ ← [Return] 
+    ├─ [1807] DeFiPaymentGateway::getSellerDisputeIds(0x0000000000000000000000000000000000000200) [staticcall]
+    │   └─ ← [Return] [1]
+    ├─ [0] VM::assertEq(1, 1, "Seller should have one dispute") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000300)
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  *Only the seller can view their dispute IDs)
+    │   └─ ← [Return] 
+    ├─ [831] DeFiPaymentGateway::getSellerDisputeIds(0x0000000000000000000000000000000000000200) [staticcall]
+    │   └─ ← [Revert] revert: Only the seller can view their dispute IDs
+    └─ ← [Stop] 
+
+[PASS] test_markOrderShipped() (gas: 312675)
+Logs:
+  DeFiPaymentGateway deployed; Owner:  728815563385977040452943777879061427756277306518
+
+Traces:
+  [312675] DeFiPaymentGatewayTest::test_markOrderShipped()
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(0x0000000000000000000000000000000000000200)
+    │   ├─ emit OrderCreated(orderId: 1, buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000200)
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [2628] DeFiPaymentGateway::orders(1) [staticcall]
+    │   └─ ← [Return] 0x0000000000000000000000000000000000000100, 0x0000000000000000000000000000000000000200, 0x0000000000000000000000000de0b6B3a7640000, 1000000000000000000 [1e18], 1, 0
+    ├─ [0] VM::assertEq(1, 1, "Order should be marked as Shipped") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000300)
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  )Only merchant of this order can call this)
+    │   └─ ← [Return] 
+    ├─ [1066] DeFiPaymentGateway::markOrderShipped(1)
+    │   └─ ← [Revert] revert: Only merchant of this order can call this
+    └─ ← [Stop] 
+
+[PASS] test_rateMerchant() (gas: 571375)
+Logs:
+  DeFiPaymentGateway deployed; Owner:  728815563385977040452943777879061427756277306518
+
+Traces:
+  [594075] DeFiPaymentGatewayTest::test_rateMerchant()
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(0x0000000000000000000000000000000000000200)
+    │   ├─ emit OrderCreated(orderId: 1, buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000200)
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [65868] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [0] 0x0000000000000000000000000000000000000200::fallback{value: 1000000000000000000}()
+    │   │   └─ ← [Stop] 
+    │   ├─ emit PaymentSent(orderId: 1, recipient: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [206985] DeFiPaymentGateway::rateMerchant(0x0000000000000000000000000000000000000200, 4, "Good service", 1)
+    │   ├─ emit RatingGiven(merchant: 0x0000000000000000000000000000000000000200, rating: 4, comment: "Good service", rater: 0x0000000000000000000000000000000000000100)
+    │   └─ ← [Stop] 
+    ├─ [848] DeFiPaymentGateway::merchantAverageRating(0x0000000000000000000000000000000000000200) [staticcall]
+    │   └─ ← [Return] 4
+    ├─ [869] DeFiPaymentGateway::merchantRatingCount(0x0000000000000000000000000000000000000200) [staticcall]
+    │   └─ ← [Return] 1
+    ├─ [0] VM::assertEq(4, 4, "Average rating should be 4") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertEq(1, 1, "Rating count should be 1") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  Rating must be between 1 and 5)
+    │   └─ ← [Return] 
+    ├─ [2120] DeFiPaymentGateway::rateMerchant(0x0000000000000000000000000000000000000200, 6, "Too high", 1)
+    │   └─ ← [Revert] revert: Rating must be between 1 and 5
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  "You have already rated this order.)
+    │   └─ ← [Return] 
+    ├─ [2782] DeFiPaymentGateway::rateMerchant(0x0000000000000000000000000000000000000200, 5, "Second rating", 1)
+    │   └─ ← [Revert] revert: You have already rated this order.
+    └─ ← [Stop] 
+
+[PASS] test_refundFromSeller() (gas: 668769)
+Logs:
+  DeFiPaymentGateway deployed; Owner:  728815563385977040452943777879061427756277306518
+
+Traces:
+  [694269] DeFiPaymentGatewayTest::test_refundFromSeller()
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(0x0000000000000000000000000000000000000200)
+    │   ├─ emit OrderCreated(orderId: 1, buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000200)
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [65868] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [0] 0x0000000000000000000000000000000000000200::fallback{value: 1000000000000000000}()
+    │   │   └─ ← [Stop] 
+    │   ├─ emit PaymentSent(orderId: 1, recipient: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [251582] DeFiPaymentGateway::reportDispute(1, "Item not received", "http://evidence.example.com")
+    │   ├─ emit DisputeReported(disputeId: 1, customer: 0x0000000000000000000000000000000000000100, orderId: 1)
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000200)
+    │   └─ ← [Return] 
+    ├─ [56167] DeFiPaymentGateway::refundFromSeller{value: 1000000000000000000}(1)
+    │   ├─ emit DisputeResolved(disputeId: 1, resolvedStatus: 4)
+    │   ├─ [0] 0x0000000000000000000000000000000000000100::fallback{value: 1000000000000000000}()
+    │   │   └─ ← [Stop] 
+    │   ├─ emit RefundInitiated(orderId: 1, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [2628] DeFiPaymentGateway::orders(1) [staticcall]
+    │   └─ ← [Return] 0x0000000000000000000000000000000000000100, 0x0000000000000000000000000000000000000200, 0x0000000000000000000000000000000000000000, 1000000000000000000 [1e18], 4, 1
+    ├─ [0] VM::assertEq(4, 4, "Order should be Refunded") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [0] VM::assertEq(1000000000000000000 [1e18], 1000000000000000000 [1e18], "Buyer did not receive the refund amount") [staticcall]
+    │   └─ ← [Return] 
+    └─ ← [Stop] 
+
+[PASS] test_reportDispute() (gas: 614071)
+Logs:
+  DeFiPaymentGateway deployed; Owner:  728815563385977040452943777879061427756277306518
+
+Traces:
+  [636771] DeFiPaymentGatewayTest::test_reportDispute()
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(0x0000000000000000000000000000000000000200)
+    │   ├─ emit OrderCreated(orderId: 1, buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000200)
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [65868] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [0] 0x0000000000000000000000000000000000000200::fallback{value: 1000000000000000000}()
+    │   │   └─ ← [Stop] 
+    │   ├─ emit PaymentSent(orderId: 1, recipient: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [251582] DeFiPaymentGateway::reportDispute(1, "Item not as described", "http://evidence.example.com")
+    │   ├─ emit DisputeReported(disputeId: 1, customer: 0x0000000000000000000000000000000000000100, orderId: 1)
+    │   └─ ← [Return] 1
+    ├─ [4018] DeFiPaymentGateway::disputes(1) [staticcall]
+    │   └─ ← [Return] 0x0000000000000000000000000000000000000100, 0x0000000000000000000000000000000000000200, "Item not as described", "http://evidence.example.com", 0
+    ├─ [0] VM::assertEq("Item not as described", "Item not as described", "Dispute reason mismatch") [staticcall]
+    │   └─ ← [Return] 
+    ├─ [2628] DeFiPaymentGateway::orders(1) [staticcall]
+    │   └─ ← [Return] 0x0000000000000000000000000000000000000100, 0x0000000000000000000000000000000000000200, 0x0000000000000000000000000000000000000000, 1000000000000000000 [1e18], 3, 1
+    ├─ [0] VM::assertEq(3, 3, "Order status should be Disputed") [staticcall]
+    │   └─ ← [Return] 
+    └─ ← [Stop] 
+
+[PASS] test_reportDispute_expired() (gas: 353830)
+Logs:
+  DeFiPaymentGateway deployed; Owner:  728815563385977040452943777879061427756277306518
+
+Traces:
+  [376530] DeFiPaymentGatewayTest::test_reportDispute_expired()
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [258399] DeFiPaymentGateway::createOrder{value: 1000000000000000000}(0x0000000000000000000000000000000000000200)
+    │   ├─ emit OrderCreated(orderId: 1, buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   ├─ emit Purchase(buyer: 0x0000000000000000000000000000000000000100, merchant: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Return] 1
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000200)
+    │   └─ ← [Return] 
+    ├─ [22520] DeFiPaymentGateway::markOrderShipped(1)
+    │   ├─ emit OrderShipped(orderId: 1)
+    │   └─ ← [Stop] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [65868] DeFiPaymentGateway::confirmDelivery(1)
+    │   ├─ emit OrderDelivered(orderId: 1)
+    │   ├─ [0] 0x0000000000000000000000000000000000000200::fallback{value: 1000000000000000000}()
+    │   │   └─ ← [Stop] 
+    │   ├─ emit PaymentSent(orderId: 1, recipient: 0x0000000000000000000000000000000000000200, amount: 1000000000000000000 [1e18])
+    │   └─ ← [Stop] 
+    ├─ [413] DeFiPaymentGateway::DISPUTE_WINDOW() [staticcall]
+    │   └─ ← [Return] 604800 [6.048e5]
+    ├─ [0] VM::warp(604802 [6.048e5])
+    │   └─ ← [Return] 
+    ├─ [0] VM::prank(0x0000000000000000000000000000000000000100)
+    │   └─ ← [Return] 
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  Dispute window has expired)
+    │   └─ ← [Return] 
+    ├─ [3054] DeFiPaymentGateway::reportDispute(1, "Late dispute", "http://evidence.example.com")
+    │   └─ ← [Revert] revert: Dispute window has expired
+    └─ ← [Stop] 
+
+Suite result: ok. 11 passed; 0 failed; 0 skipped; finished in 3.04ms (2.21ms CPU time)
+
+Ran 1 test suite in 1.48s (3.04ms CPU time): 11 tests passed, 0 failed, 0 skipped (11 total tests)
+
+🧹Start Cleaning
+[✅PASS]Moved test file to 'finished'

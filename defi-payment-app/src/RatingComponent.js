@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import './ratingComponent.css'; // Import specific CSS for this view
 
 function RatingComponent({ web3, account, contract, orderId, merchantAddress }) {
   const [rating, setRating] = useState('');
   const [comment, setComment] = useState('');
   const [transactionStatus, setTransactionStatus] = useState('');
   const [averageRating, setAverageRating] = useState(null);
+
+  console.log(orderId);
 
   useEffect(() => {
     const fetchAverageRating = async () => {
@@ -21,6 +24,7 @@ function RatingComponent({ web3, account, contract, orderId, merchantAddress }) 
     fetchAverageRating();
   }, [contract, merchantAddress]);
 
+  // double check 
   const handleRateSeller = async () => {
     if (!contract || !account || !orderId || !merchantAddress) {
       alert('Please connect your wallet and ensure order and merchant details are available.');
@@ -48,6 +52,7 @@ function RatingComponent({ web3, account, contract, orderId, merchantAddress }) 
           try {
             const avgRating = await contract.methods.getMerchantAverageRating(merchantAddress).call();
             setAverageRating(avgRating);
+            console.log("averageRating", averageRating);
           } catch (error) {
             console.error("Error fetching updated average rating:", error);
           }
@@ -62,8 +67,7 @@ function RatingComponent({ web3, account, contract, orderId, merchantAddress }) 
 
   return (
     <div className="rating-component">
-      <h4>Rate Seller</h4>
-      {averageRating !== null && <p>Average Rating: {averageRating / 100 /* Assuming the contract returns scaled rating */} / 5</p>} {/* Adjust scaling if needed */}
+      {averageRating !== null && <p>Average Rating: {averageRating} / 5</p>} {/* Adjust scaling if needed */}
       <input
         type="number"
         placeholder="Rating (1-5)"
@@ -75,7 +79,7 @@ function RatingComponent({ web3, account, contract, orderId, merchantAddress }) 
         value={comment}
         onChange={(e) => setComment(e.target.value)}
       />
-      <button onClick={handleRateSeller} disabled={!account || !orderId || !merchantAddress}>Rate Seller</button>
+      <button onClick={handleRateSeller}>Rate Seller</button>
       {transactionStatus && <p>{transactionStatus}</p>}
     </div>
   );

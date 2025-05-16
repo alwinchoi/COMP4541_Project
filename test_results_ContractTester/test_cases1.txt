@@ -1,0 +1,312 @@
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.13;
+
+// Import Foundry test utilities
+import {Test, console} from "forge-std/Test.sol";
+// Import the tested contract from the provided path
+import {DeFiPaymentGateway} from "../src/defi_code_20754097_1747397205.sol";
+
+contract DeFiPaymentGatewayTest is Test {
+    DeFiPaymentGateway public gateway;
+    address public owner;
+    address public buyer;
+    address public merchant;
+    address public randomUser; // For testing unauthorized access
+
+    // Set up initial environment: instantiate contract with a designated owner, assign test addresses.
+    function setUp() public {
+        owner = address(this);
+        buyer = address(0x100);
+        merchant = address(0x200);
+        randomUser = address(0x300);
+        gateway = new DeFiPaymentGateway(owner);
+
+        // Fund the buyer so that they can send ether for orders.
+        vm.deal(buyer, 100 ether);
+        // Fund the merchant with 0 initially.
+        vm.deal(merchant, 0 ether);
+
+        console.log("DeFiPaymentGateway deployed; Owner: ", uint256(uint160(owner)));
+    }
+
+    ////////////////////////////////
+    // Test Case 1: Create Order  //
+    ////////////////////////////////
+    // Test a successful order creation by a buyer with a valid msg.value.
+    function test_createOrder() public {
+        uint256 orderValue = 1 ether;
+        // Use buyer as the sender by starting a prank.
+        vm.prank(buyer);
+        uint256 orderId = gateway.createOrder{value: orderValue}(merchant);
+
+        // Retrieve order details and check that they are recorded correctly.
+        (
+            address orderBuyer,
+            address orderMerchant,
+            uint256 amount,
+            uint256 originalAmount,
+            DeFiPaymentGateway.OrderStatus status,
+            ,
+            ,
+
+        ) = gateway.orders(orderId);
+
+        assertEq(orderBuyer, buyer, "Order buyer incorrect");
+        assertEq(orderMerchant, merchant, "Order merchant incorrect");
+        assertEq(amount, orderValue, "Order amount incorrect");
+        assertEq(originalAmount, orderValue, "Order original amount incorrect");
+        // Order should be in Created status.
+        assertEq(uint256(status), uint256(DeFiPaymentGateway.OrderStatus.Created), "Order status should be Created");
+    }
+
+    // Test that order creation fails when msg.value is zero.
+    function test_createOrder_zeroAmount() public {
+        vm.prank(buyer);
+        vm.expectRevert("Order amount must be greater than zero");
+        gateway.createOrder(merchant);
+    }
+
+    /////////////////////////////////////////////
+    // Test Case 2: Mark Order as Shipped     //
+    /////////////////////////////////////////////
+    // Test that the merchant can mark an order as shipped only if the order is in Created state.
+    function test_markOrderShipped() public {
+        uint256 orderValue = 1 ether;
+        // Buyer creates order.
+        vm.prank(buyer);
+        uint256 orderId = gateway.createOrder{value: orderValue}(merchant);
+        
+        // Merchant marks order shipped.
+        vm.prank(merchant);
+        gateway.markOrderShipped(orderId);
+        (, , , , DeFiPaymentGateway.OrderStatus status, , ,) = gateway.orders(orderId);
+        assertEq(uint256(status), uint256(DeFiPaymentGateway.OrderStatus.Shipped), "Order should be marked as Shipped");
+
+        // Test that a non-merchant cannot mark the order as shipped.
+        vm.prank(randomUser);
+        vm.expectRevert("Only merchant of this order can call this");
+        gateway.markOrderShipped(orderId);
+    }
+
+    /////////////////////////////////////////////
+    // Test Case 3: Confirm Delivery            //
+    /////////////////////////////////////////////
+    // Test that the buyer can confirm delivery of an order that has been shipped.
+    // Also, check that upon confirmation, funds are transferred to the merchant.
+    function test_confirmDelivery() public {
+        uint256 orderValue = 1 ether;
+        // Step 1: Buyer creates an order.
+        vm.prank(buyer);
+        uint256 orderId = gateway.createOrder{value: orderValue}(merchant);
+        // Step 2: Merchant ships the order.
+        vm.prank(merchant);
+        gateway.markOrderShipped(orderId);
+        // Record merchant balance before delivery confirmation.
+        uint256 merchantBalanceBefore = merchant.balance;
+        // Step 3: Buyer confirms delivery.
+        vm.prank(buyer);
+        gateway.confirmDelivery(orderId);
+        // After confirmation, order status should be Delivered.
+        (, , , , DeFiPaymentGateway.OrderStatus status, , ,) = gateway.orders(orderId);
+        assertEq(uint256(status), uint256(DeFiPaymentGateway.OrderStatus.Delivered), "Order should be Delivered");
+
+        // Check that the merchant has received the payment.
+        uint256 merchantBalanceAfter = merchant.balance;
+        assertEq(merchantBalanceAfter - merchantBalanceBefore, orderValue, "Merchant did not receive correct payment");
+    }
+
+    // Test that only the buyer can confirm delivery.
+    function test_confirmDelivery_wrongCaller() public {
+        uint256 orderValue = 1 ether;
+        // Buyer creates order.
+        vm.prank(buyer);
+        uint256 orderId = gateway.createOrder{value: orderValue}(merchant);
+        // Merchant ships order.
+        vm.prank(merchant);
+        gateway.markOrderShipped(orderId);
+
+        // randomUser tries to confirm delivery instead of buyer.
+        vm.prank(randomUser);
+        vm.expectRevert("Only buyer of this order can call this");
+        gateway.confirmDelivery(orderId);
+    }
+
+    /////////////////////////////////////////////
+    // Test Case 4: Report Dispute              //
+    /////////////////////////////////////////////
+    // Test that the buyer can report a dispute after delivery within the dispute window.
+    function test_reportDispute() public {
+        uint256 orderValue = 1 ether;
+        // Buyer creates order.
+        vm.prank(buyer);
+        uint256 orderId = gateway.createOrder{value: orderValue}(merchant);
+        // Merchant ships order.
+        vm.prank(merchant);
+        gateway.markOrderShipped(orderId);
+        // Buyer confirms delivery.
+        vm.prank(buyer);
+        gateway.confirmDelivery(orderId);
+        // Report dispute within dispute window.
+        vm.prank(buyer);
+        uint256 disputeId = gateway.reportDispute(orderId, "Item not as described", "http://evidence.example.com");
+        // Check that dispute is recorded.
+        ( , , string memory reason, , ,) = gateway.disputes(disputeId);
+        assertEq(reason, "Item not as described", "Dispute reason mismatch");
+        // Order status should be changed to Disputed.
+        (, , , , DeFiPaymentGateway.OrderStatus status, , ,) = gateway.orders(orderId);
+        assertEq(uint256(status), uint256(DeFiPaymentGateway.OrderStatus.Disputed), "Order status should be Disputed");
+    }
+
+    // Test that dispute reporting fails if the dispute window has expired.
+    function test_reportDispute_expired() public {
+        uint256 orderValue = 1 ether;
+        // Buyer creates order.
+        vm.prank(buyer);
+        uint256 orderId = gateway.createOrder{value: orderValue}(merchant);
+        // Merchant ships order.
+        vm.prank(merchant);
+        gateway.markOrderShipped(orderId);
+        // Buyer confirms delivery.
+        vm.prank(buyer);
+        gateway.confirmDelivery(orderId);
+        // Warp time forward beyond the dispute window.
+        vm.warp(block.timestamp + gateway.DISPUTE_WINDOW() + 1);
+        // Expect dispute report to revert due to expired dispute window.
+        vm.prank(buyer);
+        vm.expectRevert("Dispute window has expired");
+        gateway.reportDispute(orderId, "Late dispute", "http://evidence.example.com");
+    }
+
+    /////////////////////////////////////////////
+    // Test Case 5: Refund from Seller           //
+    /////////////////////////////////////////////
+    // Test that the merchant can refund the buyer for a disputed order by sending the exact original amount.
+    function test_refundFromSeller() public {
+        uint256 orderValue = 1 ether;
+        // Buyer creates order.
+        vm.prank(buyer);
+        uint256 orderId = gateway.createOrder{value: orderValue}(merchant);
+        // Merchant ships order.
+        vm.prank(merchant);
+        gateway.markOrderShipped(orderId);
+        // Buyer confirms delivery.
+        vm.prank(buyer);
+        gateway.confirmDelivery(orderId);
+        // Buyer reports dispute.
+        vm.prank(buyer);
+        uint256 disputeId = gateway.reportDispute(orderId, "Item not received", "http://evidence.example.com");
+        
+        // Record buyer balance before refund.
+        uint256 buyerBalanceBefore = buyer.balance;
+        // Merchant calls refundFromSeller sending the exact original amount.
+        vm.prank(merchant);
+        gateway.refundFromSeller{value: orderValue}(orderId);
+        // Order status should now be Refunded.
+        (, , , , DeFiPaymentGateway.OrderStatus status, , ,) = gateway.orders(orderId);
+        assertEq(uint256(status), uint256(DeFiPaymentGateway.OrderStatus.Refunded), "Order should be Refunded");
+        // Check that buyer received refund.
+        uint256 buyerBalanceAfter = buyer.balance;
+        assertEq(buyerBalanceAfter - buyerBalanceBefore, orderValue, "Buyer did not receive the refund amount");
+    }
+
+    /////////////////////////////////////////////
+    // Test Case 6: Rate Merchant               //
+    /////////////////////////////////////////////
+    // Test that the buyer can rate the merchant for an order after it is delivered.
+    function test_rateMerchant() public {
+        uint256 orderValue = 1 ether;
+        // Buyer creates order.
+        vm.prank(buyer);
+        uint256 orderId = gateway.createOrder{value: orderValue}(merchant);
+        // Merchant ships order.
+        vm.prank(merchant);
+        gateway.markOrderShipped(orderId);
+        // Buyer confirms delivery.
+        vm.prank(buyer);
+        gateway.confirmDelivery(orderId);
+        // Buyer rates the merchant.
+        vm.prank(buyer);
+        gateway.rateMerchant(merchant, 4, "Good service", orderId);
+
+        // Verify that rating is stored; check reputation and average rating.
+        uint256 avgRating = gateway.merchantAverageRating(merchant);
+        uint256 ratingCount = gateway.merchantRatingCount(merchant);
+        assertEq(avgRating, 4, "Average rating should be 4");
+        assertEq(ratingCount, 1, "Rating count should be 1");
+
+        // Test that rating with an invalid value fails.
+        vm.prank(buyer);
+        vm.expectRevert("Rating must be between 1 and 5");
+        gateway.rateMerchant(merchant, 6, "Too high", orderId);
+
+        // Test that the same buyer cannot rate the same order twice.
+        vm.prank(buyer);
+        vm.expectRevert("You have already rated this order.");
+        gateway.rateMerchant(merchant, 5, "Second rating", orderId);
+    }
+
+    ///////////////////////////////////////////////
+    // Test Case 7: Access Control for Seller IDs  //
+    ///////////////////////////////////////////////
+    // Test that only the seller can get their own order and dispute IDs.
+    function test_getSellerOrderAndDisputeIds_accessControl() public {
+        uint256 orderValue = 1 ether;
+        // Buyer creates order targeted to merchant.
+        vm.prank(buyer);
+        uint256 orderId = gateway.createOrder{value: orderValue}(merchant);
+        // Merchant marks order as shipped.
+        vm.prank(merchant);
+        gateway.markOrderShipped(orderId);
+
+        // When merchant calls, should succeed.
+        vm.prank(merchant);
+        uint256[] memory sellerOrders = gateway.getSellerOrderIds(merchant);
+        assertEq(sellerOrders.length, 1, "Seller should have one order");
+
+        // If someone else (randomUser) calls getSellerOrderIds with seller address, it should revert.
+        vm.prank(randomUser);
+        vm.expectRevert("Only the seller can view their order IDs");
+        gateway.getSellerOrderIds(merchant);
+
+        // Similarly for dispute IDs, first create a dispute.
+        vm.prank(buyer);
+        gateway.confirmDelivery(orderId); // confirm delivery to allow dispute
+        vm.prank(buyer);
+        uint256 disputeId = gateway.reportDispute(orderId, "Issue", "http://evidence.example.com");
+        vm.prank(merchant);
+        uint256[] memory sellerDisputes = gateway.getSellerDisputeIds(merchant);
+        assertEq(sellerDisputes.length, 1, "Seller should have one dispute");
+
+        vm.prank(randomUser);
+        vm.expectRevert("Only the seller can view their dispute IDs");
+        gateway.getSellerDisputeIds(merchant);
+    }
+
+    ///////////////////////////////////////////////
+    // Test Case 8: Order Details Access Control   //
+    ///////////////////////////////////////////////
+    // Test that only order participants (buyer or merchant) can view order details.
+    function test_getOrderDetails_accessControl() public {
+        uint256 orderValue = 1 ether;
+        // Buyer creates order.
+        vm.prank(buyer);
+        uint256 orderId = gateway.createOrder{value: orderValue}(merchant);
+        
+        // Buyer should be able to get order details.
+        vm.prank(buyer);
+        gateway.getOrderDetails(orderId);
+
+        // Merchant should be able to get order details.
+        vm.prank(merchant);
+        gateway.getOrderDetails(orderId);
+
+        // A random user should not be able to get order details.
+        vm.prank(randomUser);
+        vm.expectRevert("Only buyer or merchant of this order can view details");
+        gateway.getOrderDetails(orderId);
+    }
+
+    // Note: getDisputeDetails is accessible by anyone; no access control test is necessary.
+}
+
