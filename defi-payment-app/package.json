@@ -2,7 +2,7 @@
   "name": "defi-payment-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://alwinchoi.github.io/COMP4541_Project/",
+  "homepage": "https://alwinchoi.github.io/COMP4541_Project",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
