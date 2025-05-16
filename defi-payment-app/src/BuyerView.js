@@ -46,7 +46,7 @@ function BuyerView({ web3, account, sellerAddress, createdOrderIds, setCreatedOr
     if (contract && account) {
       fetchBuyerOrderIds();
     }
-  }, [contract, account]);
+  }, []);
 
   const handleConfirmDelivery = async () => {
     if (!contract || !account) {
